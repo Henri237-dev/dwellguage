@@ -11,7 +11,7 @@ const neighborhoodMap = {
   'CCA': 0.7, 'Ndongo': 0.4, 'Bomaka': 0.4, 'Memoz': 0.7, 
   'Check Point': 0.75, 'Bakweri': 0.5, 'Mille 18': 0.5
 };
-const typeMap = { 'Family Home': 1.0, 'Apartment / Studio': 0.7, 'Student Hostel': 0.5, 'Commercial': 1.2 };
+const typeMap = { 'Family Home': 1.0, 'Apartment / Studio': 0.7, 'Student Hostel': 0.5, 'Commercial': 1.2, 'Apartment': 0.8, 'Studio': 0.6, 'Self-Contained Room': 0.5, 'RKT': 0.5 };
 const uniMap = { 'Walking distance (<500m)': 1.0, 'Near (500m–2km)': 0.7, 'Far (>2km)': 0.4 };
 
 export function encodeFeatures(data, isRawProperty = false) {

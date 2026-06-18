@@ -12,7 +12,7 @@ import { predictPrice, encodeFeatures } from '../ml/model';
 import { useAppContext } from '../context/AppContext';
 
 const neighborhoods = ['Tarred Malingo', 'Bulu', 'Small Soppo', 'Sandpit', 'Mayor Street', 'Dirty South', 'Muea', 'Bonduma', 'Molyko', 'Mile16', 'Siac', 'UB south area', 'Cogeni', 'Biaka/SantaBabara', 'Ub junction', 'Bakweri Town', 'Mile18', 'Muea Control', 'Mile17', 'CCA', 'Ndongo', 'Bomaka', 'Memoz', 'Check Point', 'Bakweri', 'Mille 18'];
-const propertyTypes = ['Family Home', 'Apartment / Studio', 'Student Hostel', 'Commercial'];
+const propertyTypes = ['Apartment', 'Studio', 'Self-Contained Room'];
 const proximities = ['Walking distance (<500m)', 'Near (500m–2km)', 'Far (>2km)'];
 
 export const Valuation = () => {
@@ -24,7 +24,7 @@ export const Valuation = () => {
     neighborhood: 'Molyko',
     region: 'South West',
     universityProximity: 'Walking distance (<500m)',
-    propertyType: 'Student Hostel',
+    propertyType: 'Apartment',
     bedrooms: 1,
     bathrooms: 1,
     lotSize: 500,
@@ -180,7 +180,7 @@ export const Valuation = () => {
               <div id="valuation-report" className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full -z-0"></div>
                 
-                <p className="text-sm text-gray-500 font-medium mb-1 relative z-10">Estimated Market Value {formData.propertyType === 'Student Hostel' || formData.propertyType === 'Apartment / Studio' ? '/ month (rent)' : '(purchase)'}</p>
+                <p className="text-sm text-gray-500 font-medium mb-1 relative z-10">Estimated Market Value / month (rent)</p>
                 <h3 className="text-4xl font-black text-gray-900 font-mono tracking-tighter mb-4 relative z-10">{result.price.toLocaleString()} <span className="text-xl text-primary">XAF</span></h3>
                 
                 <div className="grid grid-cols-2 gap-4 mb-6 relative z-10">
