@@ -38,7 +38,27 @@ export const Valuation = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData(prev => {
+      const updates = { [name]: value };
+      
+      if (name === 'neighborhood') {
+        const walking = ['Molyko', 'Ndongo', 'Mayor Street', 'Biaka/SantaBabara', 'UB south area'];
+        const near = ['Check Point', 'Sandpit', 'Ub junction', 'Bakweri Town', 'Bomaka'];
+        
+        if (walking.includes(value)) updates.universityProximity = proximities[0];
+        else if (near.includes(value)) updates.universityProximity = proximities[1];
+        else updates.universityProximity = proximities[2];
+      }
+      
+      if (name === 'propertyType') {
+        if (value === 'Studio' || value === 'Self-Contained Room') {
+          updates.bedrooms = 1;
+          updates.bathrooms = 1;
+        }
+      }
+      
+      return { ...prev, ...updates };
+    });
   };
 
   const handleToggle = (name) => {
@@ -140,8 +160,8 @@ export const Valuation = () => {
                 </div>
 
                 <div className="divide-y divide-gray-50">
-                  <NumberStepper label="Bedrooms" value={formData.bedrooms} onChange={(val) => handleNumberChange('bedrooms', val)} min={1} max={10} />
-                  <NumberStepper label="Bathrooms" value={formData.bathrooms} onChange={(val) => handleNumberChange('bathrooms', val)} min={1} max={6} />
+                  <NumberStepper label="Bedrooms" value={formData.bedrooms} onChange={(val) => handleNumberChange('bedrooms', val)} min={1} max={formData.propertyType === 'Apartment' ? 10 : 1} />
+                  <NumberStepper label="Bathrooms" value={formData.bathrooms} onChange={(val) => handleNumberChange('bathrooms', val)} min={1} max={formData.propertyType === 'Apartment' ? 6 : 1} />
                 </div>
               </div>
 
