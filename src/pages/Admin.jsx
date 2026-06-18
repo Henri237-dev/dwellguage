@@ -8,14 +8,23 @@ export const Admin = () => {
   const { allUsers, updateUserStatus, updateUserSubscription, notifyNewListing, updateCustomDataset } = useAppContext();
   const [activeTab, setActiveTab] = useState('users');
   const [file, setFile] = useState(null);
+  const [pendingProperties, setPendingProperties] = useState([
+    { id: 1, title: '3 Bed Apartment - Molyko', reason: 'Flagged for unusual pricing (150,000 XAF/mo)' },
+    { id: 2, title: 'Studio - Sandpit', reason: 'Pending manual location verification' }
+  ]);
 
   const handleBan = (id, currentStatus) => {
     updateUserStatus(id, currentStatus === 'banned' ? 'active' : 'banned');
   };
 
-  const handleApproveProperty = () => {
+  const handleApproveProperty = (id) => {
+    setPendingProperties(prev => prev.filter(p => p.id !== id));
     notifyNewListing();
     alert('Property approved and clients notified!');
+  };
+
+  const handleRejectProperty = (id) => {
+    setPendingProperties(prev => prev.filter(p => p.id !== id));
   };
 
   const handleDataUpload = (e) => {
@@ -92,8 +101,8 @@ export const Admin = () => {
                             <button onClick={() => handleBan(u.id, u.status)} className="text-xs text-red-600 font-medium hover:underline">
                               {u.status === 'banned' ? 'Unban' : 'Ban'}
                             </button>
-                            <button onClick={() => updateUserSubscription(u.id, u.subscription === 'Free' ? 'Pro' : 'Free')} className="text-xs text-primary font-medium hover:underline ml-2">
-                              Toggle Sub
+                            <button onClick={() => updateUserSubscription(u.id, u.subscription === 'Free' ? 'Pro' : 'Free')} className="text-xs text-primary font-medium hover:bg-primary/5 px-2 py-1 rounded ml-2 transition">
+                              Sub: <b>{u.subscription || 'Free'}</b> (Toggle)
                             </button>
                           </>
                         )}
@@ -123,16 +132,24 @@ export const Admin = () => {
         {activeTab === 'approvals' && (
           <div className="space-y-4">
             <h3 className="font-bold text-gray-900">Pending Properties</h3>
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 flex justify-between items-center">
-              <div>
-                <h4 className="font-bold text-sm">3 Bed Apartment - Molyko</h4>
-                <p className="text-xs text-gray-500">Flagged for unusual pricing (150,000 XAF/mo)</p>
+            {pendingProperties.length === 0 ? (
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 text-center text-gray-500 text-sm">
+                No pending properties to review.
               </div>
-              <div className="flex gap-2">
-                <button onClick={handleApproveProperty} className="bg-green-500 text-white px-3 py-1.5 rounded text-xs font-bold">Approve</button>
-                <button className="bg-red-500 text-white px-3 py-1.5 rounded text-xs font-bold">Reject</button>
-              </div>
-            </div>
+            ) : (
+              pendingProperties.map(prop => (
+                <div key={prop.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 flex justify-between items-center animate-in fade-in slide-in-from-bottom-2">
+                  <div>
+                    <h4 className="font-bold text-sm">{prop.title}</h4>
+                    <p className="text-xs text-gray-500">{prop.reason}</p>
+                  </div>
+                  <div className="flex gap-2">
+                    <button onClick={() => handleApproveProperty(prop.id)} className="bg-green-500 hover:bg-green-600 transition text-white px-3 py-1.5 rounded text-xs font-bold">Approve</button>
+                    <button onClick={() => handleRejectProperty(prop.id)} className="bg-red-500 hover:bg-red-600 transition text-white px-3 py-1.5 rounded text-xs font-bold">Reject</button>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         )}
 
