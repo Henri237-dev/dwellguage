@@ -77,8 +77,7 @@ export const Valuation = () => {
     
     // Simulate ML processing time
     setTimeout(() => {
-      const features = encodeFeatures(formData);
-      const prediction = predictPrice(features);
+      const prediction = predictPrice(formData);
       saveEstimate(prediction, formData);
       setResult(prediction);
       setLoading(false);
