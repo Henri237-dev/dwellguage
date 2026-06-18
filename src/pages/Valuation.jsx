@@ -10,10 +10,25 @@ import { LoadingSpinner } from '../components/ui/LoadingSpinner';
 import { Badge } from '../components/ui/Badge';
 import { predictPrice, encodeFeatures } from '../ml/model';
 import { useAppContext } from '../context/AppContext';
+import { mockProperties } from '../data/mockProperties';
 
 const neighborhoods = ['Tarred Malingo', 'Bulu', 'Small Soppo', 'Sandpit', 'Mayor Street', 'Dirty South', 'Muea', 'Bonduma', 'Molyko', 'Mile16', 'Siac', 'UB south area', 'Cogeni', 'Biaka/SantaBabara', 'Ub junction', 'Bakweri Town', 'Mile18', 'Muea Control', 'Mile17', 'CCA', 'Ndongo', 'Bomaka', 'Memoz', 'Check Point', 'Bakweri', 'Mille 18'];
 const propertyTypes = ['Apartment', 'Studio', 'Self-Contained Room'];
 const proximities = ['Walking distance (<500m)', 'Near (500m–2km)', 'Far (>2km)'];
+
+const getAvailablePropertyTypes = (neighborhood) => {
+  const typesInNeighborhood = mockProperties
+    .filter(p => p.neighborhood === neighborhood)
+    .map(p => p.exactType);
+    
+  const available = [];
+  if (typesInNeighborhood.includes('Appartment')) available.push('Apartment');
+  if (typesInNeighborhood.includes('Studio')) available.push('Studio');
+  if (typesInNeighborhood.includes('RKT')) available.push('Self-Contained Room');
+  
+  if (available.length === 0) return propertyTypes; 
+  return available;
+};
 
 export const Valuation = () => {
   const { saveEstimate } = useAppContext();
@@ -48,6 +63,15 @@ export const Valuation = () => {
         if (walking.includes(value)) updates.universityProximity = proximities[0];
         else if (near.includes(value)) updates.universityProximity = proximities[1];
         else updates.universityProximity = proximities[2];
+        
+        const available = getAvailablePropertyTypes(value);
+        if (!available.includes(prev.propertyType)) {
+          updates.propertyType = available[0];
+          if (updates.propertyType === 'Studio' || updates.propertyType === 'Self-Contained Room') {
+            updates.bedrooms = 1;
+            updates.bathrooms = 1;
+          }
+        }
       }
       
       if (name === 'propertyType') {
@@ -155,7 +179,7 @@ export const Valuation = () => {
                 <div>
                   <label className="block text-xs font-medium text-gray-700 mb-1">Property Type</label>
                   <select name="propertyType" value={formData.propertyType} onChange={handleChange} className={inputClass}>
-                    {propertyTypes.map(t => <option key={t} value={t}>{t}</option>)}
+                    {getAvailablePropertyTypes(formData.neighborhood).map(t => <option key={t} value={t}>{t}</option>)}
                   </select>
                 </div>
 
